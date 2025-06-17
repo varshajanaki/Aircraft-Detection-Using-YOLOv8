@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Military Aircraft Detection</title>
+    <!-- Modern CSS Framework - Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            color: #1a202c;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure body takes full viewport height */
+        }
+        .content-wrapper {
+            flex: 1; /* This makes the content area expand to fill available space */
+        }
+        .tech-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .drop-zone {
+            border: 2px dashed #cbd5e0;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .drop-zone:hover, .drop-zone.active {
+            border-color: #4299e1;
+            background-color: rgba(66, 153, 225, 0.1);
+        }
+        .aircraft-card {
+            transition: all 0.3s ease;
+        }
+        .aircraft-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .confidence-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #48bb78 0%, #38b2ac 100%);
+        }
+        .loading-animation {
+            background: linear-gradient(90deg, #4299e1, #667eea, #764ba2, #667eea, #4299e1);
+            background-size: 400% 400%;
+            animation: gradient 3s ease infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        .image-container img {
+            transition: transform 0.5s ease;
+        }
+        .image-container:hover img {
+            transform: scale(1.03);
+        }
+        .tooltip {
+            visibility: hidden;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            z-index: 10;
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+        .has-tooltip:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <header class="bg-gradient-to-r from-blue-800 to-indigo-900 text-white py-4 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-3xl font-bold tech-font flex items-center">
+                    <i class="fas fa-fighter-jet mr-3"></i> Military Aircraft Detection
+                </h1>
+                <div class="hidden md:flex space-x-4">
+                    <a href="/" class="hover:text-blue-300 transition"><i class="fas fa-home mr-2"></i>Home</a>
+                    <a href="/about" class="hover:text-blue-300 transition"><i class="fas fa-info-circle mr-2"></i>About</a>
+                    <a href="https://www.kaggle.com/datasets/lazercode/military-aircraft-dataset-prepared-for-yolo" target="_blank" class="hover:text-blue-300 transition"><i class="fas fa-database mr-2"></i>Dataset</a>
+                    <a href="#" class="hover:text-blue-300 transition"><i class="fas fa-question-circle mr-2"></i>Help</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper"> <!-- Added wrapper div to push footer down -->
+        <div class="container mx-auto px-4 py-8">
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-upload text-blue-600 mr-2"></i> Upload Aircraft Image
+                </h2>
+                <div class="mb-6">
+                    <p class="text-gray-600 mb-4">Upload an image containing military aircraft for automatic detection and classification.</p>
+                    <form id="upload-form" enctype="multipart/form-data">
+                        <div class="drop-zone p-8 text-center cursor-pointer mb-4" id="drop-area">
+                            <div class="mb-4">
+                                <i class="fas fa-cloud-upload-alt text-5xl text-gray-400"></i>
+                            </div>
+                            <p class="mb-2">Drag & drop your image here or click to browse</p>
+                            <p class="text-sm text-gray-500">Supports JPG, PNG, JPEG (Max 16MB)</p>
+                            <input type="file" id="file" name="file" accept="image/*" class="hidden">
+                        </div>
+                        <div id="file-preview" class="hidden mb-4">
+                            <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                                <div class="mr-4 text-blue-500"><i class="fas fa-file-image text-2xl"></i></div>
+                                <div class="flex-grow">
+                                    <p id="file-name" class="font-medium">filename.jpg</p>
+                                    <p id="file-size" class="text-sm text-gray-500">Size: 2.3 MB</p>
+                                </div>
+                                <button type="button" id="remove-file" class="text-red-500 hover:text-red-700">
+                                    <i class="fas fa-times-circle"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex justify-center">
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 flex items-center">
+                                <i class="fas fa-search mr-2"></i> Detect Aircraft
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="loading" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <div class="loading-animation h-2 w-full rounded-full mb-6"></div>
+                    <div class="animate-bounce mb-4">
+                        <i class="fas fa-plane text-4xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-medium mb-2">Processing Your Image</h3>
+                    <p class="text-gray-600">Our AI is analyzing the aircraft in your image...</p>
+                </div>
+            </div>
+
+            <div id="result-container" class="hidden">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
+                        <h3 class="text-xl font-medium text-white flex items-center">
+                            <i class="fas fa-check-circle mr-2"></i> Detection Results
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="image-container">
+                                <img id="result-image" src="" alt="Detection Result" class="w-full h-auto rounded shadow">
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-medium mb-4 flex items-center">
+                                    <i class="fas fa-tags text-blue-600 mr-2"></i> Detected Aircraft
+                                </h4>
+                                <div id="detections-list" class="space-y-3 max-h-96 overflow-y-auto pr-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-xl font-bold tech-font">Military Aircraft Detection</h3>
+                    <p class="text-gray-400">Powered by YOLOv8 and Flask</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="https://github.com/rishiakkala" class="text-gray-400 hover:text-white transition"><i class="fab fa-github"></i></a>
+                    <a href="www.linkedin.com/in/rishiakkala" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="mt-4 text-center text-gray-400 text-sm">
+                &copy; 2025 Military Aircraft Detection Project. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Drag and drop functionality
+            const dropArea = document.getElementById('drop-area');
+            const fileInput = document.getElementById('file');
+            const filePreview = document.getElementById('file-preview');
+            const fileName = document.getElementById('file-name');
+            const fileSize = document.getElementById('file-size');
+            const removeFileBtn = document.getElementById('remove-file');
+
+            // Click to select file
+            dropArea.addEventListener('click', () => fileInput.click());
+
+            // Prevent default drag behaviors
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            // Highlight drop area when item is dragged over it
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                dropArea.classList.add('active');
+            }
+
+            function unhighlight() {
+                dropArea.classList.remove('active');
+            }
+
+            // Handle dropped files
+            dropArea.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                fileInput.files = files;
+                updateFilePreview(files[0]);
+            }
+
+            // Handle selected files
+            fileInput.addEventListener('change', function() {
+                if (this.files.length) {
+                    updateFilePreview(this.files[0]);
+                }
+            });
+
+            // Update file preview
+            function updateFilePreview(file) {
+                fileName.textContent = file.name;
+                fileSize.textContent = `Size: ${formatFileSize(file.size)}`;
+                filePreview.classList.remove('hidden');
+                dropArea.classList.add('hidden');
+            }
+
+            // Format file size
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            // Remove selected file
+            removeFileBtn.addEventListener('click', function() {
+                fileInput.value = '';
+                filePreview.classList.add('hidden');
+                dropArea.classList.remove('hidden');
+            });
+
+            // Form submission
+            $('#upload-form').on('submit', function(e) {
+                e.preventDefault();
+                
+                if (!fileInput.files.length) {
+                    alert('Please select an image file first');
+                    return;
+                }
+                
+                // Show loading animation
+                $('#loading').removeClass('hidden');
+                $('#result-container').addClass('hidden');
+                
+                var formData = new FormData(this);
+                
+                $.ajax({
+                    url: '/detect',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(data) {
+                        // Hide loading animation
+                        $('#loading').addClass('hidden');
+                        
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+                        
+                        // Display results
+                        $('#result-container').removeClass('hidden');
+                        $('#result-image').attr('src', data.image_url);
+                        
+                        // Display detections with modern UI
+                        var detectionsHtml = '';
+                        data.detections.forEach(function(det, index) {
+                            const confidence = det.confidence * 100;
+                            const confidenceWidth = confidence + '%';
+                            const colorClass = confidence > 80 ? 'bg-green-500' : confidence > 60 ? 'bg-blue-500' : 'bg-yellow-500';
+                            
+                            detectionsHtml += `
+                                <div class="aircraft-card bg-gray-50 rounded-lg p-4 hover:bg-gray-100 cursor-pointer" 
+                                     data-aircraft="${det.class}" data-confidence="${confidence.toFixed(2)}" data-index="${index}">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h5 class="font-medium text-gray-900">${det.class}</h5>
+                                        <span class="text-sm font-medium ${confidence > 80 ? 'text-green-700' : confidence > 60 ? 'text-blue-700' : 'text-yellow-700'}">
+                                            ${confidence.toFixed(2)}%
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="${colorClass} h-2 rounded-full" style="width: ${confidenceWidth}"></div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        $('#detections-list').html(detectionsHtml);
+                    },
+                    error: function() {
+                        $('#loading').addClass('hidden');
+                        alert('Error processing the image');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

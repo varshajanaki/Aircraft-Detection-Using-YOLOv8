@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Military Aircraft Detection</title>
+    <!-- Modern CSS Framework - Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            color: #1a202c;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .content-wrapper {
+            flex: 1;
+        }
+        .tech-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Sticky Navigation Bar -->
+    <header class="bg-gradient-to-r from-blue-800 to-indigo-900 text-white py-4 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-3xl font-bold tech-font flex items-center">
+                    <i class="fas fa-fighter-jet mr-3"></i> Military Aircraft Detection
+                </h1>
+                <div class="hidden md:flex space-x-4">
+                    <a href="/" class="hover:text-blue-300 transition"><i class="fas fa-home mr-2"></i>Home</a>
+                    <a href="/about" class="hover:text-blue-300 transition"><i class="fas fa-info-circle mr-2"></i>About</a>
+                    <a href="https://www.kaggle.com/datasets/lazercode/military-aircraft-dataset-prepared-for-yolo" target="_blank" class="hover:text-blue-300 transition"><i class="fas fa-database mr-2"></i>Dataset</a>
+                    <a href="#" class="hover:text-blue-300 transition"><i class="fas fa-question-circle mr-2"></i>Help</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-3xl font-bold mb-6 text-indigo-800 tech-font">About the Project</h2>
+            
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold mb-4 text-gray-800">Model Training</h3>
+                <p class="text-lg mb-4">This aircraft detection system is built using YOLOv8, a state-of-the-art object detection model. YOLOv8 (You Only Look Once) is known for its speed and accuracy in real-time object detection tasks.</p>
+                <p class="text-lg mb-4">The model was trained on a comprehensive dataset of military aircraft images, with 43 different classes of aircraft. The training process involved optimizing the model to recognize various aircraft types from different angles and in different lighting conditions.</p>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold mb-4 text-gray-800">Performance Metrics</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-100 p-4 rounded-lg shadow">
+                        <h4 class="text-xl font-semibold text-indigo-800 mb-2">Precision</h4>
+                        <p class="text-3xl font-bold text-indigo-600">0.6958</p>
+                        <p class="text-sm text-gray-600">Accuracy of positive predictions</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-100 p-4 rounded-lg shadow">
+                        <h4 class="text-xl font-semibold text-indigo-800 mb-2">Recall</h4>
+                        <p class="text-3xl font-bold text-indigo-600">0.7982</p>
+                        <p class="text-sm text-gray-600">Fraction of relevant instances retrieved</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-100 p-4 rounded-lg shadow">
+                        <h4 class="text-xl font-semibold text-indigo-800 mb-2">mAP50</h4>
+                        <p class="text-3xl font-bold text-indigo-600">0.8919</p>
+                        <p class="text-sm text-gray-600">Mean Average Precision at IoU=50%</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-100 p-4 rounded-lg shadow">
+                        <h4 class="text-xl font-semibold text-indigo-800 mb-2">mAP50-95</h4>
+                        <p class="text-3xl font-bold text-indigo-600">0.7331</p>
+                        <p class="text-sm text-gray-600">Mean Average Precision across IoU thresholds</p>
+                    </div>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 class="font-semibold mb-2">What do these metrics mean?</h4>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>Precision:</strong> The ratio of correctly predicted positive observations to the total predicted positives. High precision means low false positive rate.</li>
+                        <li><strong>Recall:</strong> The ratio of correctly predicted positive observations to all observations in actual class. High recall means low false negative rate.</li>
+                        <li><strong>mAP50:</strong> Mean Average Precision with IoU threshold of 0.5. This measures how well the model detects objects with at least 50% overlap with ground truth.</li>
+                        <li><strong>mAP50-95:</strong> Mean Average Precision averaged over multiple IoU thresholds (from 0.5 to 0.95). This is a more comprehensive metric that evaluates detection quality across different overlap requirements.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold mb-4 text-gray-800">Technology Stack</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h4 class="text-xl font-semibold text-indigo-700 mb-2">Model</h4>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>YOLOv8 (You Only Look Once)</li>
+                            <li>PyTorch backend</li>
+                            <li>Ultralytics implementation</li>
+                        </ul>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h4 class="text-xl font-semibold text-indigo-700 mb-2">Backend</h4>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Flask web framework</li>
+                            <li>OpenCV for image processing</li>
+                            <li>Python 3.8+</li>
+                        </ul>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h4 class="text-xl font-semibold text-indigo-700 mb-2">Frontend</h4>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>HTML5 / CSS3 / JavaScript</li>
+                            <li>Tailwind CSS framework</li>
+                            <li>Font Awesome icons</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-xl font-bold tech-font">Military Aircraft Detection</h3>
+                    <p class="text-gray-400">Powered by YOLOv8 and Flask</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="https://github.com/rishiakkala" class="text-gray-400 hover:text-white transition"><i class="fab fa-github"></i></a>
+                    <a href="www.linkedin.com/in/rishiakkala" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="mt-4 text-center text-gray-400 text-sm">
+                &copy; 2025 Military Aircraft Detection Project. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
