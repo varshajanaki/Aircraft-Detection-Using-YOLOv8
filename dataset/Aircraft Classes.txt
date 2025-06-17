@@ -1,0 +1,45 @@
+## Aircraft Classes
+The dataset contains a diverse range of military and civilian aircraft. Here's a comprehensive list of the aircraft classes I identified:
+
+1. Fighter Jets :
+   
+   - F35, F22, F16, F15, F18, F14, F4, F117
+   - Su57, Su34, Su25, Su24
+   - J20, J10
+   - JAS39 (Gripen)
+   - EF2000 (Eurofighter Typhoon)
+   - Rafale
+   - Mirage2000
+   - Tornado
+   - MiG31
+   - YF23
+2. Bombers :
+   
+   - B1, B2, B52
+   - Tu95, Tu160
+3. Transport/Cargo Aircraft :
+   
+   - C2, C5, C17, C130
+   - A400M
+   - KC135 (Tanker)
+4. Special Purpose Aircraft :
+   
+   - E2 (Hawkeye - Early Warning)
+   - E7 (Wedgetail - AWACS)
+   - P3 (Orion - Maritime Patrol)
+   - U2 (Spy Plane)
+   - SR71 (Blackbird)
+   - RQ4 (Global Hawk - UAV)
+   - MQ9 (Reaper - UAV)
+5. Attack Aircraft :
+   
+   - A10 (Thunderbolt/Warthog)
+   - AV8B (Harrier)
+6. Other Aircraft :
+   
+   - V22 (Osprey - Tiltrotor)
+   - US2 (Amphibious Aircraft)
+   - Be200 (Amphibious Aircraft)
+   - AG600 (Amphibious Aircraft)
+   - Vulcan (Historic bomber)
+   - XB70 (Experimental bomber)
