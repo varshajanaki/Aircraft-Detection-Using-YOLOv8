@@ -1,6 +1,10 @@
 # Military Aircraft Detection using YOLOv8
 
-This project implements an object detection system for military and civilian aircraft using the YOLOv8 model. The system is trained to identify 43 different types of aircraft with high accuracy.
+<!This project implements an object detection system for military and civilian aircraft using the YOLOv8 model. The system is trained to identify 43 different types of aircraft with high accuracy.-->
+This project implements a robust aircraft detection system using YOLOv8, capable of identifying over 43 different types of military and civilian aircraft from images and videos. The system is designed for real-time inference and is accessible through an interactive Streamlit web application.
+It combines deep learning, computer vision, and user-friendly deployment to demonstrate powerful detection performance suitable for defense analysis, surveillance, and aviation research.
+
+
 
 ## Performance Metrics
 
